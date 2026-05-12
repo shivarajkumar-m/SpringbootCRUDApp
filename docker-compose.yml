@@ -1,0 +1,30 @@
+services:
+
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: studentdb
+    ports:
+      - "3307:3306"
+    networks:
+      - springboot-mysql-net
+
+  springboot-restful-webservices:
+    container_name: springboot-restful-webservices
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9090:8080"
+    depends_on:
+      - mysqldb
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - springboot-mysql-net
+    restart: on-failure
+
+networks:
+  springboot-mysql-net:
